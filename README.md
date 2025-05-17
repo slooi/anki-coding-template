@@ -11,8 +11,8 @@ Enable syntax highlighting using a markdown-like syntax. Eg:
 ``
 ```
 # Examples
-<img src="https://github.com/user-attachments/assets/5344eb1f-e18b-4798-9a23-d23388c85496" width="80%" />
-<img src="https://github.com/user-attachments/assets/f615fe4a-d3d8-421f-8a0c-70d3c4fdac94" width="80%" />
+<img src="https://github.com/user-attachments/assets/5344eb1f-e18b-4798-9a23-d23388c85496" />
+<img src="https://github.com/user-attachments/assets/f615fe4a-d3d8-421f-8a0c-70d3c4fdac94" />
 
 # Usage
 1) Use `front.html` as the front template of the card
