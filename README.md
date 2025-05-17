@@ -24,3 +24,5 @@ Enable syntax highlighting using a markdown-like syntax. Eg:
 #include <stdio.h>
 ``
 ```
+# Gotchas
+- Make sure to use `control+shift+v` when pasting code into your anki fields. This prevents parsing issues from happening (from copying html tags). If you still get parsing issues, paste the code into a program without formatting (eg:notepad,vim,console,etc) then copy it from there into the anki field to ensure all formatting tags are removed
