@@ -1,84 +1,113 @@
 <style>
-	*{
-	  box-sizing: border-box;
+	* {
+		box-sizing: border-box;
 	}
-	html, body {
-	  margin: 0;
-	  padding: 0;
+
+	html,
+	body {
+		margin: 0;
+		padding: 0;
 	}
-	#qa, #content {
-	  margin: 0;
-	  padding: 0;
+
+	/* Make sure children *can* have margin/padding */
+	#qa,
+	#content {
+		margin: 0;
+		padding: 0;
 	}
-	  </style>
-	  <link type="text/css" rel="stylesheet" href="_prism.css"/>
-	  <script src="_prism.js" data-manual></script>
-	<div id="content">
+</style>
+<link type="text/css" rel="stylesheet" href="_prism.css" />
+<script src="_prism.js" data-manual></script>
+<div id="content">
 	{{Front}}
-	
-	</div>
-	  <script defer>
+</div>
+<script defer>
 	function escapeHtml(str) {
-	  return str
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#39;");
+		return str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#39;");
 	}
 	function unescapeHtml(str) {
-	  return str
-		.replace(/\&amp;/g, "&")
-		.replace(/\&lt;/g, "<")
-		.replace(/\&gt;/g, ">")
-		.replace(/\&quot;/g, '"')
-		.replace(/\&#39;/g, "'");
+		return str
+			.replace(/\&amp;/g, "&")
+			.replace(/\&lt;/g, "<")
+			.replace(/\&gt;/g, ">")
+			.replace(/\&quot;/g, '"')
+			.replace(/\&#39;/g, "'");
 	}
 	var cont = document.querySelector("#content");
 	var p = cont.innerHTML;
 	function debug(text) {
-	  DEBUG_ON=true
-		if(DEBUG_ON){
-			 const div = document.createElement("h3");
-		  div.innerText = text;
-		  document.body.appendChild(div);
+		DEBUG_ON = true
+		if (DEBUG_ON) {
+			const div = document.createElement("h3");
+			div.innerText = text;
+			document.body.appendChild(div);
 		}
 	}
 	function c() {
-	  if (typeof Prism === "undefined") {
-		debug("UNDEFINED!!!");
-		return;
-	  }
-	
-	  html=cont.innerHTML
-		debug("cont:"+cont.innerHTML)
+		if (typeof Prism === "undefined") {
+			debug("UNDEFINED!!!");
+			return;
+		}
+
+		html = cont.innerHTML
+		debug("cont:" + cont.innerHTML)
 		console.log("hi!!")
-	
-	  // Step 2: Replace code blocks
-	  html = html.replace(/``(\w+)(<br>|<div>|\n)([\w\W]+?)``/gmi, function (match, lang, newl,code) {
-	   code = code
+
+		// Step 2: Replace code blocks
+		html = html.replace(/``(\w+)(<br>|<div>|\n)([\w\W]+?)``/gmi, function (match, lang, newl, code) {
+			code = code
 			debug("1  !!!!!!!!!!!!!!")
-			debug("code:"+code)
-			code = code.replace(/\<div\>/gm,"").replace(/\<\/div\>/gm,"\n");
+			debug("code:" + code)
+			code = code.replace(/\<div\>/gm, "").replace(/\<\/div\>/gm, "\n");
 			debug("2  !!!!!!!!!!!!!!")
-			debug("code:"+code)
-	  // Step 1: Convert <br> to real line breaks
-	  code = code.replace(/<br\s*\/?>/gi, "\n");
+			debug("code:" + code)
+			// Step 1: Convert <br> to real line breaks
+			code = code.replace(/<br\s*\/?>/gi, "\n");
 			debug("3  !!!!!!!!!!!!!!")
-			debug("code:"+code)
+			debug("code:" + code)
 			code = `<span style="font-size:1rem;color:#999">${lang}</span><pre><code class='language-${lang}'>${code}</code></pre>`
 			debug("4  !!!!!!!!!!!!!!")
-			debug("code:"+code)
-		return code;
-	  });
-	
-	  // Step 3: Inject new HTML
-	  cont.innerHTML = html;
-	
-	  // Step 4: Highlight
-	  Prism.highlightAll();
-	
-	  debug("DEFINED!!!"+p);
+			debug("code:" + code)
+			return code;
+		});
+
+
+		html = html.replace(/``(.*?)``/g, function (match, code, offset) {
+			// Check the context before this match
+			const before = html.slice(0, offset);
+			debug("5  !!!!!!!!!!!!!!")
+			debug("before:" + before)
+
+			// If we're inside a <pre> or <code>, skip this match
+			const lastPreOpen = before.lastIndexOf("<pre");
+			const lastPreClose = before.lastIndexOf("</pre>");
+			const lastCodeOpen = before.lastIndexOf("<code");
+			const lastCodeClose = before.lastIndexOf("</code>");
+
+			const insidePre = lastPreOpen > lastPreClose;
+			const insideCode = lastCodeOpen > lastCodeClose;
+
+			if (insidePre || insideCode) {
+				return match; // Skip — we're inside <pre> or <code>
+			}
+
+			// Otherwise, wrap it with inline style
+			return `<code style="background:#EFEFEF;padding:2px 4px;border-radius:4px;">${code}</code>`;
+		});
+
+
+		// Step 3: Inject new HTML
+		cont.innerHTML = html;
+
+		// Step 4: Highlight
+		Prism.highlightAll();
+
+		debug("DEFINED!!!" + p);
 	}
 	c();
-	</script>
+</script>
