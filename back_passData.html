@@ -1,0 +1,32 @@
+<script src="_diff.js"></script>
+<script>
+	/* Debug */
+	function debug(...strings) {
+		DEBUG_ON = true
+		if (DEBUG_ON) {
+			const div = document.createElement("h3");
+			div.innerText = strings.join(" ");
+			document.body.appendChild(div);
+		}
+	}
+</script>
+
+
+{{Front}}
+<br>
+
+
+<script>
+	const guess = sessionStorage.getItem("guess")
+	console.log("Back Template guess:",guess)
+	debug("Back Template guess:",guess)
+</script>
+
+
+
+<!-- 
+{{Front}}
+<span class="typeGood">typeGood</span>
+<span class="typeBad">typeBad</span>
+<span class="typeMissed">typeMissed</span>
+ -->
