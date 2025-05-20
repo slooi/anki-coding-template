@@ -18,6 +18,9 @@
 
 
 <script>
+	sessionStorage.clear()
+
+	console.log("here",`{{Front}}`)
 	console.log(Diff.diffChars("helloiamuser","hello world"))
 	ta = document.querySelector("textarea")
 	ta.addEventListener("input", e => {
