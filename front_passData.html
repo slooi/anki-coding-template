@@ -1,17 +1,3 @@
-<script src="_diff.js"></script>
-<script>
-	/* Debug */
-	function debug(...strings) {
-		DEBUG_ON = false
-		if (DEBUG_ON) {
-			const div = document.createElement("h3");
-			div.innerText = strings.join(" ");
-			document.body.appendChild(div);
-		}
-	}
-</script>
-
-
 {{Front}}
 <br>
 <textarea></textarea>
@@ -20,14 +6,8 @@
 <script>
 	sessionStorage.clear()
 
-	console.log("here",`{{Front}}`)
-	console.log(Diff.diffChars("helloiamuser","hello world"))
 	ta = document.querySelector("textarea")
-	ta.addEventListener("input", e => {
-		sessionStorage.setItem("guess",ta.value)
-		console.log(ta.value)
-		debug(ta.value)
-	})
+	ta.addEventListener("input", e => sessionStorage.setItem("guess",ta.value))
 </script>
 
 
