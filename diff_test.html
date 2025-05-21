@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Diff</title>
+</head>
+
+<body>
+GUESS
+<div style="white-space: pre;">
+if [-f ${file}]
+then
+	echo "file exists"
+fi
+</div>
+ANSWER
+<div style="white-space: pre;">
+if [ -f ${file} ]
+then
+	echo "file exists"
+fi
+</div>
+
+
+
+
+GUESS2
+<div style="white-space: pre;">
+if [<span style="background:red"> </span>-f ${file}<span style="background:red"> </span>]
+then
+	echo "file exists"
+fi
+</div>
+ANSWER2
+<div style="white-space: pre;">
+if [ -f ${file} ]
+then
+	echo "file exists"
+fi
+</div>
+	<script src="_diff.js"></script>
+	<script>
+		function createText(color, value) {
+			span = document.createElement('span');
+			span.style.color = color;
+			span.textContent = value;
+
+			document.body.appendChild(span);
+		}
+
+		/* 
+		
+		const guess = 'tttawoj',
+			answer = 'tut ta woj',
+
+
+		if [-f ${file}]
+		then
+			echo "file exists"
+		fi
+
+
+
+		hillo hllo b bye
+		hello hello bye
+
+
+		*/
+
+		const guess = 'hillo hllo b bye  ale  i',
+			answer = 'hello hello bye  andrei',
+			color = '';
+		let span = null;
+
+		const diff = Diff.diffChars(guess, answer)
+
+
+		createText("grey", guess)
+		document.body.appendChild(document.createElement("br"));
+		createText("grey", answer)
+		document.body.appendChild(document.createElement("br"));
+
+		console.log(diff)
+		// diff.forEach((part) => {
+		// 	// green for additions, red for deletions
+		// 	// grey for common parts
+		// 	const color = part.added ? 'green' :
+		// 		part.removed ? 'red' : 'grey';
+		// 	createText(color, part.value)
+		// });
+
+/* ・ */
+
+		document.body.appendChild(document.createElement("br"));
+		document.body.appendChild(document.createElement("br"));
+
+		const guessList = []
+		const answerList = []
+		diff.forEach((part,i) => {
+			const result = !part.added && !part.removed ? "same" : part.added && !part.removed ? "missing" : !part.added && part.removed ? "wrong" : "ERROR"
+			// green for additions, red for deletions
+			// grey for common parts
+			if (result==="same") {
+				span = document.createElement('span');
+				span.style.background = "green";
+				span.textContent = part.value;
+				guessList.push(span)
+
+				span = document.createElement('span');
+				span.style.background = "green";
+				span.textContent = part.value;
+				answerList.push(span)
+			} else if (result==="missing") {					
+				console.log("i:",i)
+				console.log("WAISDOPAPSD",guessList[guessList.length-1])
+				console.log(guessList[guessList.length-1].style.background)
+				
+				if(guessList[guessList.length-1]&&guessList[guessList.length-1].style.background === "red"){
+					// span = document.createElement('span');
+					// span.style.background = "grey";
+					// span.textContent = '~';
+					// guessList.push(span)
+				}else{
+					span = document.createElement('span');
+					span.style.background = "grey";
+					span.textContent = '~';
+					guessList.push(span)
+				}
+
+				span = document.createElement('span');
+				span.style.background = "grey";
+				span.textContent = part.value;
+				answerList.push(span)
+			} else if (result==="wrong") {
+				span = document.createElement('span');
+				span.style.background = "red";
+				span.textContent = part.value;
+				guessList.push(span)
+
+				// span = document.createElement('span');
+				// span.style.color = "grey";
+				// span.textContent = part.value;
+				// answerList.push(span)
+			} else {
+				throw new Error("HUH WHAT'S HAPPENING!?")
+			}
+		});
+
+
+		guessList.forEach(guess=>document.body.append(guess))
+		document.body.appendChild(document.createElement("br"));
+		document.body.appendChild(document.createElement("br"));
+		answerList.forEach(answer=>document.body.append(answer))
+	</script>
+</body>
+
+</html>
