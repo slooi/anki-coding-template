@@ -6,6 +6,6 @@
 <script>
 	sessionStorage.clear()
 
-	ta = document.querySelector("textarea")
+	var ta = document.querySelector("textarea")
 	ta.addEventListener("input", e => sessionStorage.setItem("userAnswer",ta.value))
 </script>
