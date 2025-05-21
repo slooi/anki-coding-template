@@ -1,5 +1,6 @@
+
 //// Remove expected html tags
-var answerHTML = document.querySelector("#ans").innerHTML.replace(/^(<div>)*/,"").replace(/<\/div>/gm,"").replace(/<div>/gm,"\n").replace(/<br\s*?\/?>/gm,"\n")
+var answerHTML = document.querySelector("#real-answer").innerHTML.replace(/^(<div>)*/,"").replace(/<\/div>/gm,"").replace(/<div>/gm,"\n").replace(/<br\s*?\/?>/gm,"\n")
 
 //// Verification no html tags exist
 if(answerHTML.match(/<|>/gm)) {
