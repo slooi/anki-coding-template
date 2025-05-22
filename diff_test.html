@@ -13,128 +13,128 @@ GUESS
 <div style="white-space: pre;">
 
 </div>
-	<script src="_diff.js"></script>
-	<script>
-		const TYPES= {
-			SAME:"SAME",
-			ADDED:"ADDED",
-			REMOVED:"REMOVED"
-		}
+<script src="_diff.js"></script>
+<script>
+	const TYPES= {
+		SAME:"SAME",
+		ADDED:"ADDED",
+		REMOVED:"REMOVED"
+	}
 
-		function getDiffs(userAnswer,realAnswer){
-			/* 
-				INPUT
-				 userAnswer - string
-				 realAnswer - string
-				OUTPUT:
-				 userAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
-				 realAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
+	function getDiffs(userAnswer,realAnswer){
+		/* 
+			INPUT
+				userAnswer - string
+				realAnswer - string
+			OUTPUT:
+				userAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
+				realAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
 
 
-				diffUserAnswer rules:	
-				- green when: 	SAME as diffRealAnswer
-				- red when: 	something needs to be REMOVED to reach diffRealAnswer
-				- grey when: 	something was MISSING to reach diffRealAnswer
-				diffRealAnswer
-				- green when: 	diffRealAnswer is same as diffUserAnswer
-				- grey when:		something was MISSING to reach diffRealAnswer from diffUserAnswer 
-				
-			*/
-			const diff = Diff.diffChars(userAnswer,realAnswer)
+			diffUserAnswer rules:	
+			- green when: 	SAME as diffRealAnswer
+			- red when: 	something needs to be REMOVED to reach diffRealAnswer
+			- grey when: 	something was MISSING to reach diffRealAnswer
+			diffRealAnswer
+			- green when: 	diffRealAnswer is same as diffUserAnswer
+			- grey when:		something was MISSING to reach diffRealAnswer from diffUserAnswer 
+			
+		*/
+		const diff = Diff.diffChars(userAnswer,realAnswer)
 
-			const userAnswerDiffs=[]
-			const realAnswerDiffs=[]
-			diff.forEach(part=>{
-				const type = !part.added && !part.removed ? TYPES["SAME"] : !part.added && part.removed ? TYPES["REMOVED"] : part.added && !part.removed ? TYPES["ADDED"] :  "UNKNOWN"
-				if(type==="UNKNOWN"){
-					const h1=document.createElement("h1")
-					h1.innerText="ERROR: type UNKNOWN is NOT expected"
-					document.body.append(h1)
-				}
+		const userAnswerDiffs=[]
+		const realAnswerDiffs=[]
+		diff.forEach(part=>{
+			const type = !part.added && !part.removed ? TYPES["SAME"] : !part.added && part.removed ? TYPES["REMOVED"] : part.added && !part.removed ? TYPES["ADDED"] :  "UNKNOWN"
+			if(type==="UNKNOWN"){
+				const h1=document.createElement("h1")
+				h1.innerText="ERROR: type UNKNOWN is NOT expected"
+				document.body.append(h1)
+			}
 
-				switch(type){
-					case TYPES["SAME"]:
-						userAnswerDiffs.push({
-							type,
-							value:part.value
-						})
-						realAnswerDiffs.push({
-							type,
-							value:part.value
-						})
-						break;
-					case TYPES["ADDED"]:
-						userAnswerDiffs.push({
-							type,
-							value:part.value
-						})
-						realAnswerDiffs.push({
-							type,
-							value:part.value
-						})
-						break;
-					case TYPES["REMOVED"]:
-						userAnswerDiffs.push({
-							type,
-							value:part.value
-						})
-						// realAnswerDiffs.push({
-						// 	type,
-						// 	value:part.value
-						// })
-						break;
-					default:
-						throw new Error("ERROR UNEXPECTED STATE")
-				}
-			})
-			return [userAnswerDiffs, realAnswerDiffs]
-		}
+			switch(type){
+				case TYPES["SAME"]:
+					userAnswerDiffs.push({
+						type,
+						value:part.value
+					})
+					realAnswerDiffs.push({
+						type,
+						value:part.value
+					})
+					break;
+				case TYPES["ADDED"]:
+					userAnswerDiffs.push({
+						type,
+						value:part.value
+					})
+					realAnswerDiffs.push({
+						type,
+						value:part.value
+					})
+					break;
+				case TYPES["REMOVED"]:
+					userAnswerDiffs.push({
+						type,
+						value:part.value
+					})
+					// realAnswerDiffs.push({
+					// 	type,
+					// 	value:part.value
+					// })
+					break;
+				default:
+					throw new Error("ERROR UNEXPECTED STATE")
+			}
+		})
+		return [userAnswerDiffs, realAnswerDiffs]
+	}
 
-		function generateDiffFrags(userAnswerDiffs,realAnswerDiffs){
-			const userAnswerFrag = document.createDocumentFragment()
-			const realAnswerFrag = document.createDocumentFragment()
+	function generateDiffFrags(userAnswerDiffs,realAnswerDiffs){
+		const userAnswerFrag = document.createDocumentFragment()
+		const realAnswerFrag = document.createDocumentFragment()
 
-			userAnswerDiffs.forEach(diff=>{
-				const el=document.createElement("span")
-				el.innerText=diff.value
-				if(diff.type===TYPES["SAME"]){
-					el.style.background="#b4fda5"
-				}else if(diff.type===TYPES["REMOVED"]){
-					el.style.background="#ff7b7b"
-				}else if(diff.type===TYPES["ADDED"]){
-					el.style.background="rgb(255, 227, 115)"
-				}else{
-					throw new Error("ERROR UNEXPECTED TYPE in userAnswerDiffs!!!")
-				}
-				userAnswerFrag.append(el)
-			})
+		userAnswerDiffs.forEach(diff=>{
+			const el=document.createElement("span")
+			el.innerText=diff.value
+			if(diff.type===TYPES["SAME"]){
+				el.style.background="#b4fda5"
+			}else if(diff.type===TYPES["REMOVED"]){
+				el.style.background="#ff7b7b"
+			}else if(diff.type===TYPES["ADDED"]){
+				el.style.background="rgb(255, 227, 115)"
+			}else{
+				throw new Error("ERROR UNEXPECTED TYPE in userAnswerDiffs!!!")
+			}
+			userAnswerFrag.append(el)
+		})
 
-			realAnswerDiffs.forEach(diff=>{
-				const el=document.createElement("span")
-				el.innerText=diff.value
-				if(diff.type===TYPES["SAME"]){
-					el.style.background="#b4fda5"
-				}else if(diff.type===TYPES["ADDED"]){
-					el.style.background="rgb(255, 227, 115)"
-				}else{
-					throw new Error("ERROR UNEXPECTED TYPE in realAnswerDiffs!!!")
-				}
-				realAnswerFrag.append(el)
-			})	
+		realAnswerDiffs.forEach(diff=>{
+			const el=document.createElement("span")
+			el.innerText=diff.value
+			if(diff.type===TYPES["SAME"]){
+				el.style.background="#b4fda5"
+			}else if(diff.type===TYPES["ADDED"]){
+				el.style.background="rgb(255, 227, 115)"
+			}else{
+				throw new Error("ERROR UNEXPECTED TYPE in realAnswerDiffs!!!")
+			}
+			realAnswerFrag.append(el)
+		})	
 
-			return {userAnswerFrag,realAnswerFrag}
-		}
+		return {userAnswerFrag,realAnswerFrag}
+	}
 
-		function renderDiffs(userAnswer,realAnswer){
-			const frags=generateDiffFrags(...getDiffs(userAnswer,realAnswer))
-			document.body.append(frags.userAnswerFrag)
-			document.body.append(document.createElement("br"))
-			document.body.append(frags.realAnswerFrag)
-			document.body.append(document.createElement("br"))
-			document.body.append(document.createElement("br"))
-		}
+	function renderDiffs(userAnswer,realAnswer){
+		const frags=generateDiffFrags(...getDiffs(userAnswer,realAnswer))
+		document.body.append(frags.userAnswerFrag)
+		document.body.append(document.createElement("br"))
+		document.body.append(frags.realAnswerFrag)
+		document.body.append(document.createElement("br"))
+		document.body.append(document.createElement("br"))
+	}
 
-		renderDiffs(`if [-f 'bob.txt' ] 
+	renderDiffs(`if [-f 'bob.txt' ] 
 then
     echo "exists!"
 fi`,`if [ -f 'log.txt' ]
@@ -142,7 +142,7 @@ then
     echo "exists!"
 fi
 `)
-	</script>
+</script>
 </body>
 
 </html>
