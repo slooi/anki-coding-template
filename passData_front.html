@@ -7,5 +7,5 @@
 	sessionStorage.clear()
 
 	var ta = document.querySelector("textarea")
-	ta.addEventListener("input", e => sessionStorage.setItem("userAnswer",ta.value))
+	ta.addEventListener("input", e => sessionStorage.setItem("userAnswer",ta.value.trim()))
 </script>

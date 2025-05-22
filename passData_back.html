@@ -19,4 +19,40 @@
 	var userAnswer = sessionStorage.getItem("userAnswer")
 	console.log("userAnswer:",userAnswer)
 	debug("userAnswer:",userAnswer)
-</script>
+
+	
+	function getRealAnswer(realAnswerElement){
+		//// Convert html tags into their plain text counterparts
+		/* HTML TAGS
+			<div></div>
+			<br>		
+		*/
+		let answerHTML = realAnswerElement.innerHTML.replace(/^(<div>)*/,"").replace(/<\/div>/gm,"").replace(/<div>/gm,"\n").replace(/<\s*?br\s*?\/?>/gm,"\n")
+		//// Validate no html tags exist
+		if(answerHTML.match(/<|>/gm)) {
+			// DEBUG
+			const h1=document.createElement("h1")
+			h1.innerText="ERROR! unexpected html tag found! Here is the full output: "+answerHTML.innerHTML;
+			document.body.append(h1)
+		}
+		//// Unescape plain text characters
+		/* ORIGINALLY PLAIN TEXT
+			<	=>	&lt;
+			>	=>	&gt;
+			&	=>	&amp;
+			spaces	=>	&nbsp;
+		*/
+		let answer = answerHTML.replace(/\&nbsp\;/gm," ").replace(/\&lt\;/gm,"<").replace(/\&gt\;/gm,">").replace(/&amp;/gm,"&")
+
+		//Strip head and tail whitespace
+		answer = answer.trim()
+		
+		return answer
+	}
+
+	console.log("#real-answer")
+	console.log(getRealAnswer(document.querySelector("#real-answer")))
+	console.log("COMPARE")
+	console.log(getRealAnswer(document.querySelector("#real-answer"))===userAnswer)
+	debug(`${getRealAnswer(document.querySelector("#real-answer"))===userAnswer}`)
+	</script>
