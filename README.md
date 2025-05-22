@@ -4,7 +4,7 @@ A collection of anki card templates tailored for coding.
 
 ## Diff gotcha
 
-- A `.trim()` is performed on both `userAnswer` and `realAnswer`/`{{Back}}` because anki silently removes leading and trailing whitespace when pasting code into `{{Back}}`, making accurate comparision impossible without normalization. Inputs like ` hello ` and `hello` when pasted collapse to the same value of `hello`
+- A `.trim()` is performed on both `userAnswer` and `realAnswer`/`{{Back}}` because anki silently removes leading and trailing whitespace when pasting code into `{{Back}}`, making accurate comparision impossible without normalization. Strings like `" hello "` and `"hello"` when pasted collapse to the same value of `"hello"`
 
 ## Syntax Highlighting Template
 
