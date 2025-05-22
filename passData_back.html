@@ -11,9 +11,13 @@
 	}
 </script>
 
-<div id="real-answer">{{Back}}</div>
+<div id="real-answer-field">{{Back}}</div>
 <br>
-
+<div>
+	<pre id="user-answer-diff"></pre>
+	↓
+	<pre id="real-answer-diff"></pre>
+</div>
 
 <script>
 	var userAnswer = sessionStorage.getItem("userAnswer")
@@ -49,9 +53,9 @@
 		
 		return answer
 	}
-	var realAnswer=getRealAnswer(document.querySelector("#real-answer"))
+	var realAnswer=getRealAnswer(document.querySelector("#real-answer-field"))
 
-	console.log("#real-answer")
+	console.log("#real-answer-field")
 	console.log(realAnswer)
 	console.log("COMPARE")
 	console.log(realAnswer===userAnswer)
@@ -114,10 +118,10 @@
 					})
 					break;
 				case TYPES["ADDED"]:
-					userAnswerDiffs.push({
-						type,
-						value:part.value
-					})
+					// userAnswerDiffs.push({
+					// 	type,
+					// 	value:part.value
+					// })
 					realAnswerDiffs.push({
 						type,
 						value:part.value
@@ -177,11 +181,8 @@
 
 	function renderDiffs(userAnswer,realAnswer){
 		const frags=generateDiffFrags(...getDiffs(userAnswer,realAnswer))
-		document.body.append(frags.userAnswerFrag)
-		document.body.append(document.createElement("br"))
-		document.body.append(frags.realAnswerFrag)
-		document.body.append(document.createElement("br"))
-		document.body.append(document.createElement("br"))
+		document.getElementById("user-answer-diff").append(frags.userAnswerFrag)
+		document.getElementById("real-answer-diff").append(frags.realAnswerFrag)
 	}
 
 	renderDiffs(userAnswer,realAnswer)
