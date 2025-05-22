@@ -11,149 +11,137 @@
 <body>
 GUESS
 <div style="white-space: pre;">
-if [-f ${file}]
-then
-	echo "file exists"
-fi
-</div>
-ANSWER
-<div style="white-space: pre;">
-if [ -f ${file} ]
-then
-	echo "file exists"
-fi
-</div>
 
-
-
-
-GUESS2
-<div style="white-space: pre;">
-if [<span style="background:red"> </span>-f ${file}<span style="background:red"> </span>]
-then
-	echo "file exists"
-fi
-</div>
-ANSWER2
-<div style="white-space: pre;">
-if [ -f ${file} ]
-then
-	echo "file exists"
-fi
 </div>
 	<script src="_diff.js"></script>
 	<script>
-		function createText(color, value) {
-			span = document.createElement('span');
-			span.style.color = color;
-			span.textContent = value;
-
-			document.body.appendChild(span);
+		const TYPES= {
+			SAME:"SAME",
+			ADDED:"ADDED",
+			REMOVED:"REMOVED"
 		}
 
-		/* 
-		
-		const guess = 'tttawoj',
-			answer = 'tut ta woj',
+		function getDiffs(userAnswer,realAnswer){
+			/* 
+				INPUT
+				 userAnswer - string
+				 realAnswer - string
+				OUTPUT:
+				 userAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
+				 realAnswerDiffs - [{type:"SAME"|"ADDED"|"REMOVED", value; string}]
 
 
-		if [-f ${file}]
-		then
-			echo "file exists"
-		fi
-
-
-
-		hillo hllo b bye
-		hello hello bye
-
-
-		*/
-
-		const guess = 'hillo hllo b bye  ale  i',
-			answer = 'hello hello bye  andrei',
-			color = '';
-		let span = null;
-
-		const diff = Diff.diffChars(guess, answer)
-
-
-		createText("grey", guess)
-		document.body.appendChild(document.createElement("br"));
-		createText("grey", answer)
-		document.body.appendChild(document.createElement("br"));
-
-		console.log(diff)
-		// diff.forEach((part) => {
-		// 	// green for additions, red for deletions
-		// 	// grey for common parts
-		// 	const color = part.added ? 'green' :
-		// 		part.removed ? 'red' : 'grey';
-		// 	createText(color, part.value)
-		// });
-
-/* ・ */
-
-		document.body.appendChild(document.createElement("br"));
-		document.body.appendChild(document.createElement("br"));
-
-		const guessList = []
-		const answerList = []
-		diff.forEach((part,i) => {
-			const result = !part.added && !part.removed ? "same" : part.added && !part.removed ? "missing" : !part.added && part.removed ? "wrong" : "ERROR"
-			// green for additions, red for deletions
-			// grey for common parts
-			if (result==="same") {
-				span = document.createElement('span');
-				span.style.background = "green";
-				span.textContent = part.value;
-				guessList.push(span)
-
-				span = document.createElement('span');
-				span.style.background = "green";
-				span.textContent = part.value;
-				answerList.push(span)
-			} else if (result==="missing") {					
-				console.log("i:",i)
-				console.log("WAISDOPAPSD",guessList[guessList.length-1])
-				console.log(guessList[guessList.length-1].style.background)
+				diffUserAnswer rules:	
+				- green when: 	SAME as diffRealAnswer
+				- red when: 	something needs to be REMOVED to reach diffRealAnswer
+				- grey when: 	something was MISSING to reach diffRealAnswer
+				diffRealAnswer
+				- green when: 	diffRealAnswer is same as diffUserAnswer
+				- grey when:		something was MISSING to reach diffRealAnswer from diffUserAnswer 
 				
-				if(guessList[guessList.length-1]&&guessList[guessList.length-1].style.background === "red"){
-					// span = document.createElement('span');
-					// span.style.background = "grey";
-					// span.textContent = '~';
-					// guessList.push(span)
-				}else{
-					span = document.createElement('span');
-					span.style.background = "grey";
-					span.textContent = '~';
-					guessList.push(span)
+			*/
+			const diff = Diff.diffChars(userAnswer,realAnswer)
+
+			const userAnswerDiffs=[]
+			const realAnswerDiffs=[]
+			diff.forEach(part=>{
+				const type = !part.added && !part.removed ? TYPES["SAME"] : !part.added && part.removed ? TYPES["REMOVED"] : part.added && !part.removed ? TYPES["ADDED"] :  "UNKNOWN"
+				if(type==="UNKNOWN"){
+					const h1=document.createElement("h1")
+					h1.innerText="ERROR: type UNKNOWN is NOT expected"
+					document.body.append(h1)
 				}
 
-				span = document.createElement('span');
-				span.style.background = "grey";
-				span.textContent = part.value;
-				answerList.push(span)
-			} else if (result==="wrong") {
-				span = document.createElement('span');
-				span.style.background = "red";
-				span.textContent = part.value;
-				guessList.push(span)
+				switch(type){
+					case TYPES["SAME"]:
+						userAnswerDiffs.push({
+							type,
+							value:part.value
+						})
+						realAnswerDiffs.push({
+							type,
+							value:part.value
+						})
+						break;
+					case TYPES["ADDED"]:
+						userAnswerDiffs.push({
+							type,
+							value:part.value
+						})
+						realAnswerDiffs.push({
+							type,
+							value:part.value
+						})
+						break;
+					case TYPES["REMOVED"]:
+						userAnswerDiffs.push({
+							type,
+							value:part.value
+						})
+						// realAnswerDiffs.push({
+						// 	type,
+						// 	value:part.value
+						// })
+						break;
+					default:
+						throw new Error("ERROR UNEXPECTED STATE")
+				}
+			})
+			return [userAnswerDiffs, realAnswerDiffs]
+		}
 
-				// span = document.createElement('span');
-				// span.style.color = "grey";
-				// span.textContent = part.value;
-				// answerList.push(span)
-			} else {
-				throw new Error("HUH WHAT'S HAPPENING!?")
-			}
-		});
+		function generateDiffFrags(userAnswerDiffs,realAnswerDiffs){
+			const userAnswerFrag = document.createDocumentFragment()
+			const realAnswerFrag = document.createDocumentFragment()
 
+			userAnswerDiffs.forEach(diff=>{
+				const el=document.createElement("span")
+				el.innerText=diff.value
+				if(diff.type===TYPES["SAME"]){
+					el.style.background="#b4fda5"
+				}else if(diff.type===TYPES["REMOVED"]){
+					el.style.background="#ff7b7b"
+				}else if(diff.type===TYPES["ADDED"]){
+					el.style.background="rgb(255, 227, 115)"
+				}else{
+					throw new Error("ERROR UNEXPECTED TYPE in userAnswerDiffs!!!")
+				}
+				userAnswerFrag.append(el)
+			})
 
-		guessList.forEach(guess=>document.body.append(guess))
-		document.body.appendChild(document.createElement("br"));
-		document.body.appendChild(document.createElement("br"));
-		answerList.forEach(answer=>document.body.append(answer))
+			realAnswerDiffs.forEach(diff=>{
+				const el=document.createElement("span")
+				el.innerText=diff.value
+				if(diff.type===TYPES["SAME"]){
+					el.style.background="#b4fda5"
+				}else if(diff.type===TYPES["ADDED"]){
+					el.style.background="rgb(255, 227, 115)"
+				}else{
+					throw new Error("ERROR UNEXPECTED TYPE in realAnswerDiffs!!!")
+				}
+				realAnswerFrag.append(el)
+			})	
+
+			return {userAnswerFrag,realAnswerFrag}
+		}
+
+		function renderDiffs(userAnswer,realAnswer){
+			const frags=generateDiffFrags(...getDiffs(userAnswer,realAnswer))
+			document.body.append(frags.userAnswerFrag)
+			document.body.append(document.createElement("br"))
+			document.body.append(frags.realAnswerFrag)
+			document.body.append(document.createElement("br"))
+			document.body.append(document.createElement("br"))
+		}
+
+		renderDiffs(`if [-f 'bob.txt' ] 
+then
+    echo "exists!"
+fi`,`if [ -f 'log.txt' ]
+then
+    echo "exists!"
+fi
+`)
 	</script>
 </body>
 
