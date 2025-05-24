@@ -14,9 +14,9 @@
 <div id="real-answer-field">{{Back}}</div>
 <br>
 <div>
-	<pre id="user-answer-diff"></pre>
+	<pre id="user-answer-diff" style="padding:2px"></pre>
 	↓
-	<pre id="real-answer-diff"></pre>
+	<pre id="real-answer-diff" style="padding:2px"></pre>
 </div>
 {{ExtraInfo}}
 
@@ -186,5 +186,5 @@
 		document.getElementById("real-answer-diff").append(frags.realAnswerFrag)
 	}
 
-	renderDiffs(userAnswer, realAnswer)
+	renderDiffs(userAnswer || "", realAnswer)
 </script>
