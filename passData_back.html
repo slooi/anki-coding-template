@@ -10,7 +10,7 @@
 		}
 	}
 </script>
-
+{{Front}}
 <div id="real-answer-field">{{Back}}</div>
 <br>
 <div>
@@ -18,25 +18,26 @@
 	↓
 	<pre id="real-answer-diff"></pre>
 </div>
+{{ExtraInfo}}
 
 <script>
 	var userAnswer = sessionStorage.getItem("userAnswer")
-	console.log("userAnswer:",userAnswer)
-	debug("userAnswer:",userAnswer)
+	console.log("userAnswer:", userAnswer)
+	debug("userAnswer:", userAnswer)
 
-	
-	function getRealAnswer(realAnswerElement){
+
+	function getRealAnswer(realAnswerElement) {
 		//// Convert html tags into their plain text counterparts
 		/* HTML TAGS
 			<div></div>
 			<br>		
 		*/
-		let answerHTML = realAnswerElement.innerHTML.replace(/^(<div>)*/,"").replace(/<\/div>/gm,"").replace(/<div>/gm,"\n").replace(/<\s*?br\s*?\/?>/gm,"\n")
+		let answerHTML = realAnswerElement.innerHTML.replace(/^(<div>)*/, "").replace(/<\/div>/gm, "").replace(/<div>/gm, "\n").replace(/<\s*?br\s*?\/?>/gm, "\n")
 		//// Validate no html tags exist
-		if(answerHTML.match(/<|>/gm)) {
+		if (answerHTML.match(/<|>/gm)) {
 			// DEBUG
-			const h1=document.createElement("h1")
-			h1.innerText="ERROR! unexpected html tag found! Here is the full output: "+answerHTML.innerHTML;
+			const h1 = document.createElement("h1")
+			h1.innerText = "ERROR! unexpected html tag found! Here is the full output: " + answerHTML.innerHTML;
 			document.body.append(h1)
 		}
 		//// Unescape plain text characters
@@ -46,20 +47,20 @@
 			&	=>	&amp;
 			spaces	=>	&nbsp;
 		*/
-		let answer = answerHTML.replace(/\&nbsp\;/gm," ").replace(/\&lt\;/gm,"<").replace(/\&gt\;/gm,">").replace(/&amp;/gm,"&")
+		let answer = answerHTML.replace(/\&nbsp\;/gm, " ").replace(/\&lt\;/gm, "<").replace(/\&gt\;/gm, ">").replace(/&amp;/gm, "&")
 
 		//Strip head and tail whitespace
 		answer = answer.trim()
-		
+
 		return answer
 	}
-	var realAnswer=getRealAnswer(document.querySelector("#real-answer-field"))
+	var realAnswer = getRealAnswer(document.querySelector("#real-answer-field"))
 
 	console.log("#real-answer-field")
 	console.log(realAnswer)
 	console.log("COMPARE")
-	console.log(realAnswer===userAnswer)
-	debug(`${realAnswer===userAnswer}`)
+	console.log(realAnswer === userAnswer)
+	debug(`${realAnswer === userAnswer}`)
 </script>
 
 
@@ -69,13 +70,13 @@
 
 <script src="_diff.js"></script>
 <script>
-	var TYPES= {
-		SAME:"SAME",
-		ADDED:"ADDED",
-		REMOVED:"REMOVED"
+	var TYPES = {
+		SAME: "SAME",
+		ADDED: "ADDED",
+		REMOVED: "REMOVED"
 	}
 
-	function getDiffs(userAnswer,realAnswer){
+	function getDiffs(userAnswer, realAnswer) {
 		/* 
 			INPUT
 				userAnswer - string
@@ -94,27 +95,27 @@
 			- grey when:		something was MISSING to reach diffRealAnswer from diffUserAnswer 
 			
 		*/
-		const diff = Diff.diffChars(userAnswer,realAnswer)
+		const diff = Diff.diffChars(userAnswer, realAnswer)
 
-		const userAnswerDiffs=[]
-		const realAnswerDiffs=[]
-		diff.forEach(part=>{
-			const type = !part.added && !part.removed ? TYPES["SAME"] : !part.added && part.removed ? TYPES["REMOVED"] : part.added && !part.removed ? TYPES["ADDED"] :  "UNKNOWN"
-			if(type==="UNKNOWN"){
-				const h1=document.createElement("h1")
-				h1.innerText="ERROR: type UNKNOWN is NOT expected"
+		const userAnswerDiffs = []
+		const realAnswerDiffs = []
+		diff.forEach(part => {
+			const type = !part.added && !part.removed ? TYPES["SAME"] : !part.added && part.removed ? TYPES["REMOVED"] : part.added && !part.removed ? TYPES["ADDED"] : "UNKNOWN"
+			if (type === "UNKNOWN") {
+				const h1 = document.createElement("h1")
+				h1.innerText = "ERROR: type UNKNOWN is NOT expected"
 				document.body.append(h1)
 			}
 
-			switch(type){
+			switch (type) {
 				case TYPES["SAME"]:
 					userAnswerDiffs.push({
 						type,
-						value:part.value
+						value: part.value
 					})
 					realAnswerDiffs.push({
 						type,
-						value:part.value
+						value: part.value
 					})
 					break;
 				case TYPES["ADDED"]:
@@ -124,13 +125,13 @@
 					// })
 					realAnswerDiffs.push({
 						type,
-						value:part.value
+						value: part.value
 					})
 					break;
 				case TYPES["REMOVED"]:
 					userAnswerDiffs.push({
 						type,
-						value:part.value
+						value: part.value
 					})
 					// realAnswerDiffs.push({
 					// 	type,
@@ -144,46 +145,46 @@
 		return [userAnswerDiffs, realAnswerDiffs]
 	}
 
-	function generateDiffFrags(userAnswerDiffs,realAnswerDiffs){
+	function generateDiffFrags(userAnswerDiffs, realAnswerDiffs) {
 		const userAnswerFrag = document.createDocumentFragment()
 		const realAnswerFrag = document.createDocumentFragment()
 
-		userAnswerDiffs.forEach(diff=>{
-			const el=document.createElement("span")
-			el.innerText=diff.value
-			if(diff.type===TYPES["SAME"]){
-				el.style.background="#b4fda5"
-			}else if(diff.type===TYPES["REMOVED"]){
-				el.style.background="#ff7b7b"
-			}else if(diff.type===TYPES["ADDED"]){
-				el.style.background="rgb(255, 227, 115)"
-			}else{
+		userAnswerDiffs.forEach(diff => {
+			const el = document.createElement("span")
+			el.innerText = diff.value
+			if (diff.type === TYPES["SAME"]) {
+				el.style.background = "#b4fda5"
+			} else if (diff.type === TYPES["REMOVED"]) {
+				el.style.background = "#ff7b7b"
+			} else if (diff.type === TYPES["ADDED"]) {
+				el.style.background = "rgb(255, 227, 115)"
+			} else {
 				throw new Error("ERROR UNEXPECTED TYPE in userAnswerDiffs!!!")
 			}
 			userAnswerFrag.append(el)
 		})
 
-		realAnswerDiffs.forEach(diff=>{
-			const el=document.createElement("span")
-			el.innerText=diff.value
-			if(diff.type===TYPES["SAME"]){
-				el.style.background="#b4fda5"
-			}else if(diff.type===TYPES["ADDED"]){
-				el.style.background="rgb(255, 227, 115)"
-			}else{
+		realAnswerDiffs.forEach(diff => {
+			const el = document.createElement("span")
+			el.innerText = diff.value
+			if (diff.type === TYPES["SAME"]) {
+				el.style.background = "#b4fda5"
+			} else if (diff.type === TYPES["ADDED"]) {
+				el.style.background = "rgb(255, 227, 115)"
+			} else {
 				throw new Error("ERROR UNEXPECTED TYPE in realAnswerDiffs!!!")
 			}
 			realAnswerFrag.append(el)
-		})	
+		})
 
-		return {userAnswerFrag,realAnswerFrag}
+		return { userAnswerFrag, realAnswerFrag }
 	}
 
-	function renderDiffs(userAnswer,realAnswer){
-		const frags=generateDiffFrags(...getDiffs(userAnswer,realAnswer))
+	function renderDiffs(userAnswer, realAnswer) {
+		const frags = generateDiffFrags(...getDiffs(userAnswer, realAnswer))
 		document.getElementById("user-answer-diff").append(frags.userAnswerFrag)
 		document.getElementById("real-answer-diff").append(frags.realAnswerFrag)
 	}
 
-	renderDiffs(userAnswer,realAnswer)
+	renderDiffs(userAnswer, realAnswer)
 </script>
