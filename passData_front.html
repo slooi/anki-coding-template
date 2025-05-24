@@ -1,11 +1,112 @@
 {{Front}}
 <br>
-<textarea></textarea>
+
+
+<div id="in">
+	<textarea placeholder="Type your code here..."></textarea>
+	<div id="kbd">
+		<button onclick="insert('()')">()</button>
+		<button onclick="insert('{}')">{}</button>
+		<button onclick="insert('[]')">[]</button>
+		<button onclick="insert('&lt;&gt;')">&lt;&gt;</button>
+		<button onclick="insert('tab')">Tab</button>
+	</div>
+</div>
 
 
 <script>
 	sessionStorage.clear()
 
 	var ta = document.querySelector("textarea")
-	ta.addEventListener("input", e => sessionStorage.setItem("userAnswer",ta.value.trim()))
+	ta.addEventListener("input", e => sessionStorage.setItem("userAnswer", ta.value.trim()))
+
+</script>
+
+
+<style>
+	#in {
+		display: flex;
+		flex-direction: column;
+		justify-content: end;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+	}
+
+	#kbd {
+		display: flex;
+		justify-content: space-around;
+	}
+
+	#kbd button {
+		font-size: 18px;
+		padding: 18px;
+		border: 1px solid #aaa;
+		border-radius: 5px;
+		background: white;
+		flex: 1;
+		margin: 0 4px;
+	}
+
+	textarea {
+		width: 100%;
+		height: 150px;
+		font-family: monospace;
+		font-size: 16px;
+	}
+</style>
+
+
+
+
+<script>
+
+
+	function indentRange(text, start, end) {
+		var linesWithinRange = getLinesWithinRange(text, start, end)
+		var beforeText = text.substring(0, linesWithinRange[0].start)
+		var afterText = text.substring(linesWithinRange[linesWithinRange.length - 1].end + 1)
+		var centerText = linesWithinRange.map(line => "    " + line.substring).join("")
+		var combinedText = beforeText + centerText + afterText
+		console.log(`###before:${beforeText}\n###after:${afterText}\n###center:${centerText}`)
+		console.log(`#####combined:${combinedText}`)
+		return combinedText
+	}
+	function getLinesWithinRange(text, start, end) {
+		let lines = [...text.matchAll(/(^.*(?:\n|$))/gm)].map(m => ({ substring: m[[0]], start: m.index }))
+		lines = lines.map((line, i) => ({ ...line, end: lines[i + 1] === undefined ? line.start + line.substring.length : lines[i + 1].start - 1 }))
+		linesWithinRange = lines.filter(line => end >= line.start && start <= line.end)
+		return linesWithinRange
+	}
+	function indentSelection(text, start, end) {
+		textarea = document.querySelector('textarea');
+		text = textarea.value;
+		start = textarea.selectionStart;
+		end = textarea.selectionEnd;
+		text = textarea.value;
+		console.log(`start ${start}, end ${end}, substring ${text.substring(start, end)}`);
+		textarea.value = indentRange(text, start, end)
+	}
+
+
+
+	function insert(str) {
+		const input = document.querySelector('textarea');
+		const start = input.selectionStart;
+		const end = input.selectionEnd;
+		const text = input.value;
+
+		if (str === "tab") {
+			indentSelection(text, start, end)
+
+			input.selectionStart = start + 4;
+			input.selectionEnd = end + 4;
+		} else {
+			input.value = text.slice(0, start) + str + text.slice(end);
+			input.selectionStart = input.selectionEnd = start + str.length;
+		}
+		input.focus();
+	}
 </script>
