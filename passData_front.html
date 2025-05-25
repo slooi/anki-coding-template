@@ -9,7 +9,8 @@
 		<button onclick="insert('{}')">{}</button>
 		<button onclick="insert('[]')">[]</button>
 		<button onclick="insert('&lt;&gt;')">&lt;&gt;</button>
-		<button onclick="insert('tab')">Tab</button>
+		<button onclick="insert('<<')">⇤</button>
+		<button onclick="insert('>>')">⇥</button>
 	</div>
 </div>
 
@@ -64,11 +65,24 @@
 <script>
 
 
-	function indentRange(text, start, end) {
+	function shiftRange(text, start, end, shiftDir = "right") {
 		var linesWithinRange = getLinesWithinRange(text, start, end)
 		var beforeText = text.substring(0, linesWithinRange[0].start)
 		var afterText = text.substring(linesWithinRange[linesWithinRange.length - 1].end + 1)
-		var centerText = linesWithinRange.map(line => "    " + line.substring).join("")
+		var centerText = linesWithinRange.map(line => {
+			console.log(shiftDir)
+			if (shiftDir === "right" || shiftDir === "r") {
+				return "    " + line.substring
+			} else {
+				var i = -1
+				while (true) {
+					i++;
+					if (line.substring[i] !== " " || i === 4) break
+				}
+				return line.substring.substring(i)
+			}
+
+		}).join("")
 		var combinedText = beforeText + centerText + afterText
 		console.log(`###before:${beforeText}\n###after:${afterText}\n###center:${centerText}`)
 		console.log(`#####combined:${combinedText}`)
@@ -80,17 +94,6 @@
 		linesWithinRange = lines.filter(line => end >= line.start && start <= line.end)
 		return linesWithinRange
 	}
-	function indentSelection(text, start, end) {
-		textarea = document.querySelector('textarea');
-		text = textarea.value;
-		start = textarea.selectionStart;
-		end = textarea.selectionEnd;
-		text = textarea.value;
-		console.log(`start ${start}, end ${end}, substring ${text.substring(start, end)}`);
-		textarea.value = indentRange(text, start, end)
-	}
-
-
 
 	function insert(str) {
 		const input = document.querySelector('textarea');
@@ -98,11 +101,14 @@
 		const end = input.selectionEnd;
 		const text = input.value;
 
-		if (str === "tab") {
-			indentSelection(text, start, end)
-
+		if (str === ">>") {
+			input.value = shiftRange(text, start, end, "r")
 			input.selectionStart = start + 4;
 			input.selectionEnd = end + 4;
+		} else if (str === "<<") {
+			input.value = shiftRange(text, start, end, "l")
+			input.selectionStart = start;
+			input.selectionEnd = end;
 		} else {
 			input.value = text.slice(0, start) + str + text.slice(end);
 			input.selectionStart = input.selectionEnd = start + str.length;
