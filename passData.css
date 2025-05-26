@@ -1,0 +1,16 @@
+.card {
+    font-family: arial;
+    font-size: 20px;
+    text-align: center;
+    color: black;
+    background-color: white;
+}
+.extra-info{
+		padding:0.5rem;
+		margin:0.5rem;
+		color:#333;
+		background:#f0f0f0;
+}
+pre{
+    background:#eee;
+}
