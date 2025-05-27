@@ -135,6 +135,9 @@
 			input.value = shiftObj.combinedText
 			input.selectionStart = start + shiftObj.shiftStart;
 			input.selectionEnd = end + shiftObj.shiftEnd;
+		} else if (str === "()" || str === "{}" || str === "[]" || str === "&lt;&gt;") {
+			input.value = text.slice(0, start) + str + text.slice(end);
+			input.selectionStart = input.selectionEnd = start + str.length - 1;
 		} else {
 			input.value = text.slice(0, start) + str + text.slice(end);
 			input.selectionStart = input.selectionEnd = start + str.length;
