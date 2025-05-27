@@ -14,3 +14,12 @@
 pre{
     background:#eee;
 }
+.field{
+    white-space:pre-line;
+}
+*{
+	box-sizing: border-box;
+}
+textarea{
+	  background: #fffa;
+}
