@@ -4,13 +4,21 @@
 
 <div id="in">
 	<textarea placeholder="Type your code here..."></textarea>
-	<div id="kbd">
-		<button onclick="insert('()')">()</button>
-		<button onclick="insert('{}')">{}</button>
-		<button onclick="insert('[]')">[]</button>
-		<button onclick="insert('&lt;&gt;')">&lt;&gt;</button>
-		<button onclick="insert('<<')">⇤</button>
-		<button onclick="insert('>>')">⇥</button>
+	<div style="display:flex;flex-direction: column;padding:0;margin:0;">
+		<div class="keyboard-row">
+			<button onclick="insert('`')">`</button>
+			<button onclick="insert('$')">$</button>
+			<button onclick="insert('|')">|</button>
+			<button onclick="insert('=')">=</button>
+		</div>
+		<div class="keyboard-row">
+			<button onclick="insert('()')">()</button>
+			<button onclick="insert('{}')">{}</button>
+			<button onclick="insert('[]')">[]</button>
+			<button onclick="insert('&lt;&gt;')">&lt;&gt;</button>
+			<button onclick="insert('<<')">⇤</button>
+			<button onclick="insert('>>')">⇥</button>
+		</div>
 	</div>
 </div>
 
@@ -36,19 +44,16 @@
 		z-index: 9999;
 	}
 
-	#kbd {
-		display: flex;
-		justify-content: space-around;
+	button {
+		margin: 0;
+		padding: 18px;
+		flex: 1;
+		margin: 2px;
 	}
 
-	#kbd button {
-		font-size: 18px;
-		padding: 18px;
-		border: 1px solid #aaa;
-		border-radius: 5px;
-		background: white;
-		flex: 1;
-		margin: 0 4px;
+	.keyboard-row {
+		display: flex;
+		justify-content: space-around;
 	}
 
 	textarea {
