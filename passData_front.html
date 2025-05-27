@@ -99,8 +99,8 @@
 			if (end - lastLine.start < Math.abs(lastLine.shift)) {
 				shiftEnd = -1 * (end - lastLine.start)
 			}
-			shiftEnd += centerLines.reduce((acc, line) => acc + line.shift, 0) - lastLine.shift
 		}
+		shiftEnd += centerLines.reduce((acc, line) => acc + line.shift, 0) - lastLine.shift
 		return {
 			shiftStart,
 			shiftEnd,
